@@ -2,17 +2,14 @@ const http = require("node:http");
 const url = require("node:url");
 const fs = require("node:fs");
 
-// Load the JSON file into memory when the server starts
 let jsonData;
 
-// Read the JSON file when the server starts
 fs.readFile('en-US.json', 'utf8', (err, data) => {
     if (err) {
         console.error('Error reading JSON file:', err);
-        process.exit(1); // Exit the process if there's an error
+        process.exit(1);
     }
-    jsonData = JSON.parse(data); // Parse JSON data
-    console.log('JSON data loaded');
+    jsonData = JSON.parse(data);
 });
 
 let server = http.createServer((request, response) => {
@@ -27,9 +24,9 @@ let server = http.createServer((request, response) => {
 
     let json = { Error: "Invalid request" };
 
-    if (pathname == "/items") json = items();
-    if (pathname == "/tools") json = tools();
-    if (pathname == "/foods") json = foods();
+    if (pathname == "/items") json = items(); //localhost:88/items
+    if (pathname == "/tools") json = tools(); //localhost:88/tools
+    if (pathname == "/foods") json = foods(); //localhost:88/foods
 
     if (pathname == "/item" && query.name) json = item(query); //localhost:88/item?name=Uranium Waste
     if (pathname == "/tool" && query.name) json = tool(query); //localhost:88/tool?name=Xeno-Basher
@@ -47,7 +44,7 @@ function items() {
     jsonData.forEach(item => {
         if (item.NativeClass == "/Script/CoreUObject.Class'/Script/FactoryGame.FGItemDescriptor'") {
             item.Classes.forEach(classItem => {
-                data.push(classItem)
+                data.push({ClassName : classItem.ClassName, mDisplayName: classItem.mDisplayName, mDescription: classItem.mDescription});
             });
         }
     });
@@ -59,7 +56,7 @@ function tools() {
     jsonData.forEach(item => {
         if (item.NativeClass == "/Script/CoreUObject.Class'/Script/FactoryGame.FGEquipmentDescriptor'") {
             item.Classes.forEach(classItem => {
-                data.push(classItem)
+                data.push({ClassName : classItem.ClassName, mDisplayName: classItem.mDisplayName, mDescription: classItem.mDescription});
             });
         }
     });
@@ -70,7 +67,9 @@ function foods() {
     let data = []
     jsonData.forEach(item => {
         if (item.NativeClass == "/Script/CoreUObject.Class'/Script/FactoryGame.FGConsumableDescriptor'") {
-            data.push(classItem)
+            item.Classes.forEach(classItem => {
+                data.push({ClassName : classItem.ClassName, mDisplayName: classItem.mDisplayName, mDescription: classItem.mDescription});
+            });
         }
     });
     return [ ...data ];

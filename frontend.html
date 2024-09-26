@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+body {
+    font-family: "Roboto", system-ui;
+    background-color: #212529;
+}
+
+h1 {
+    text-align: center;
+    border-bottom: 1px solid #495057;
+    color: white;
+    padding-bottom: 10px;
+    width: 70%;
+    margin: 0px auto;
+    margin-bottom: 10px;
+}
+
+#items {
+    background-color: #343a40;
+    border-radius: 30px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.item {
+    flex: 0 0 auto;
+    margin: 5px;
+    color: white;
+    text-align: center;
+    padding: 30px;
+    /*cursor: pointer;*/
+    border-radius: 20px;
+    transition: 0.5s;
+}
+
+.item:hover {
+    background-color: #495057;
+    transition: 0.5s;
+}
+
+.item img {
+    width: 128px;
+    height: 128px;
+    margin-bottom: 20px;
+}
+</style>
+<script>
+    async function onload() {
+        let response = await fetch("http://localhost:88/items");
+        let json = await response.json();
+
+        for (let item of json) {
+            document.getElementById("items").innerHTML += `<div onclick=""; class="item"><img src="images/${item.ClassName}.png"><br><span>${item.mDisplayName}</span><br><span>${item.ClassName}</span></div>`;
+        }
+    }
+</script>
+<body onload="onload();">
+    <div class="container">
+        <h1>Satisfactory Items</h1>
+        <div id="items"></div>
+    </div>
+</body>
+</html>
